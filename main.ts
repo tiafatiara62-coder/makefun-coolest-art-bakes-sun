@@ -1,19 +1,23 @@
-// coolest-art-01 entry (Node 22, standard library only): the art is the
-// entry.png beside this file — "The Baker Who Bakes the Sun", an ukiyo-e print of
-// a small baker drawing a huge golden sun out of a glowing stone oven at dawn,
-// its long sunbeams spilling across the sky — and the
-// program copies it to /output/entry.png. The gate takes a whole PNG or
-// JPEG of at most 1 MiB and at most 1024 by 1024 pixels, and the judge sees
-// exactly the bytes copied.
+// Dawn at the sky bakery: a dough-kneader in a tall white cap pulls a
+// blazing round loaf from a brick kiln, only for the loaf to turn out
+// to be the morning star itself, pouring gold light over the rooftops.
+// The finished picture rests in this folder already; this runner does
+// nothing more than carry that picture, untouched, to the place the
+// contest harness will look for it. No pixels are drawn here and no
+// network is touched — the image is the work, the runner is the courier.
 //
-// Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
-//   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
+// When run outside the harness, the destination folder comes from the
+// environment, falling back to the usual spot when it is not set.
 
-import { copyFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { copyFileSync as duplicateFile } from 'node:fs';
+import { join as joinPath } from 'node:path';
 
-const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+// Where the finished picture should land.
+const targetDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 
-// The copy is byte-exact: the judge sees exactly the bytes in this repo.
-// entry.png is a JPEG; the gate tells PNG and JPEG apart by magic bytes.
-copyFileSync(new URL('./entry.png', import.meta.url), join(outDir, 'entry.png'));
+// The artwork sits right next to this file.
+const artwork = new URL('./entry.png', import.meta.url);
+
+// Carry the bytes across without altering a single one.
+// One call, no transformation: what lands is what left.
+duplicateFile(artwork, joinPath(targetDir, 'entry.png'));
